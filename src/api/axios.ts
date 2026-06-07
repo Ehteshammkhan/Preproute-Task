@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "../store/auth.store";
 
 const api = axios.create({
-  baseURL: "https://admin-moderator-backend-staging.up.railway.app/api",
+  baseURL: "/api",
 });
 
 api.interceptors.request.use((config) => {
