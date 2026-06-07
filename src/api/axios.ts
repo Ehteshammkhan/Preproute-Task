@@ -1,21 +1,14 @@
 import axios from "axios";
-import { storage } from "../utils";
-import { STORAGE_KEYS } from "../constants/app.constants";
+import { useAuthStore } from "../store/auth.store";
 
 const api = axios.create({
-  baseURL: "/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: "https://admin-moderator-backend-staging.up.railway.app/api",
 });
 
 api.interceptors.request.use((config) => {
-  const token = storage.get<string>(STORAGE_KEYS.TOKEN);
+  const token = useAuthStore.getState().token;
 
   if (token) {
-    config.headers.set?.("Authorization", `Bearer ${token}`);
-
-    // fallback
     config.headers.Authorization = `Bearer ${token}`;
   }
 

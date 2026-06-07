@@ -1,12 +1,8 @@
-import {
-  ButtonHTMLAttributes,
-  ReactNode,
-} from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cn } from "../../utils";
 
-interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
 
   loading?: boolean;
@@ -38,7 +34,7 @@ function Button({
         disabled:opacity-60
         disabled:cursor-not-allowed
         `,
-        className
+        className,
       )}
       {...props}
     >

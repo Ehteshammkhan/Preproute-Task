@@ -1,30 +1,16 @@
-import {
-  InputHTMLAttributes,
-} from "react";
-
+import type { InputHTMLAttributes } from "react";
 import { cn } from "../../utils";
 
-interface InputProps
-  extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
 
   error?: string;
 }
 
-function Input({
-  label,
-  error,
-  className,
-  ...props
-}: InputProps) {
+function Input({ label, error, className, ...props }: InputProps) {
   return (
     <div className="space-y-2">
-
-      {label && (
-        <label className="text-sm font-medium">
-          {label}
-        </label>
-      )}
+      {label && <label className="text-sm font-medium">{label}</label>}
 
       <input
         className={cn(
@@ -38,19 +24,13 @@ function Input({
           outline-none
           focus:border-blue-500
           `,
-          error &&
-            "border-red-500",
-          className
+          error && "border-red-500",
+          className,
         )}
         {...props}
       />
 
-      {error && (
-        <p className="text-sm text-red-500">
-          {error}
-        </p>
-      )}
-
+      {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
 }

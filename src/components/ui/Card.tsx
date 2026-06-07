@@ -1,7 +1,4 @@
-import {
-  ReactNode,
-} from "react";
-
+import type { ReactNode } from "react";
 import { cn } from "../../utils";
 
 interface CardProps {
@@ -10,10 +7,7 @@ interface CardProps {
   className?: string;
 }
 
-function Card({
-  children,
-  className,
-}: CardProps) {
+function Card({ children, className }: CardProps) {
   return (
     <div
       className={cn(
@@ -23,7 +17,7 @@ function Card({
         p-6
         shadow-sm
         `,
-        className
+        className,
       )}
     >
       {children}
