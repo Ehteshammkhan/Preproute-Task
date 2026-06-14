@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Button, Card, Input, Loader, Select } from "../../components/ui";
 import { FormField, RadioGroup, Tabs } from "../../components/forms";
@@ -8,12 +8,14 @@ import { FormField, RadioGroup, Tabs } from "../../components/forms";
 import { useSubjects, useTopics, useSubTopics } from "../../hooks";
 import { createTest, getTestById, updateTest } from "../../api/tests.api";
 import { useTestStore } from "../../store";
+import { QUERY_KEYS } from "../../constants/queryKeys";
 
 import { errorToast, getApiError, successToast } from "../../utils";
 
 function CreateTest() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const isEditMode = Boolean(id);
   const setTest = useTestStore((state) => state.setTest);
@@ -66,11 +68,19 @@ function CreateTest() {
     setTotalQuestions(editTest.total_questions ?? 10);
   }, [editTest]);
 
+  const invalidateTests = () => {
+    queryClient.invalidateQueries({
+      queryKey: QUERY_KEYS.TESTS,
+    });
+  };
+
   const createMutation = useMutation({
     mutationFn: createTest,
 
     onSuccess: (response) => {
       const createdTest = response.data;
+
+      invalidateTests();
 
       setTest({
         ...createdTest,
@@ -99,6 +109,12 @@ function CreateTest() {
 
     onSuccess: (response) => {
       const updatedTest = response.data;
+
+      invalidateTests();
+
+      queryClient.invalidateQueries({
+        queryKey: ["test", updatedTest.id],
+      });
 
       setTest({
         ...updatedTest,
@@ -313,7 +329,9 @@ function CreateTest() {
             type="button"
             className="w-auto bg-gray-100 px-10 text-blue-600 hover:bg-gray-200"
             onClick={() =>
-              isEditMode && id ? navigate(`/tests/${id}/preview`) : navigate("/dashboard")
+              isEditMode && id
+                ? navigate(`/tests/${id}/preview`)
+                : navigate("/dashboard")
             }
           >
             Cancel

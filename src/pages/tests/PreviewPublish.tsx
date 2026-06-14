@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Card, Loader } from "../../components/ui";
@@ -14,10 +14,12 @@ import { errorToast, getApiError, successToast, isUuid } from "../../utils";
 import { getTestById, publishTest } from "../../api/tests.api";
 import { fetchBulkQuestions } from "../../api/questions.api";
 import { useSubjects, useSubTopics, useTopics } from "../../hooks";
+import { QUERY_KEYS } from "../../constants/queryKeys";
 
 function PreviewPublish() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const storeTest = useTestStore((state) => state.currentTest);
   const storeQuestions = useTestStore((state) => state.questions);
@@ -94,8 +96,18 @@ function PreviewPublish() {
     mutationFn: publishTest,
 
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.TESTS,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["test", testId],
+      });
+
       successToast("Test published successfully");
+
       clearTest();
+
       navigate("/dashboard");
     },
 
